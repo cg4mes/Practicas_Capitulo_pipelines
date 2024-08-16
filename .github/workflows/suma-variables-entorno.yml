@@ -19,7 +19,7 @@ jobs:
         echo "resultado de la suma es: $RESULTADO"
 
         if [ $RESULTADO -gt 10 ]; then
-          echo "el resultado de la suma es mayor a 10"
+          echo "el resultado de la suma es mayor 10"
         else
           echo "el resultado de la suma es menor o igual a 10"
         fi
