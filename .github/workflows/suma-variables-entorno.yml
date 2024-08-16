@@ -12,9 +12,6 @@ jobs:
     outputs: 
       resultado: ${{ steps.step1.outputs.RESULTADO }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
     - name: suma de variables de entorno
       id: step1
       run: |
