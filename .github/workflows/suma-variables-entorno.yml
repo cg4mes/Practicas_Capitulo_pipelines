@@ -1,4 +1,4 @@
-name: suma de dos variables de entorno
+name: suma de variables de entorno
 
 on:
   push:
@@ -6,23 +6,24 @@ on:
       - test/**
 
 jobs:
-  suma_variables:
+  suma:
+    name: suma de variables
     runs-on: ubuntu-latest
-    environment: qa
     outputs: 
-      resultado: ${{ steps.step1.outputs.RESULTADO }}
+      resultado: ${{ steps.suma.outputs.resultado }}
     steps:
-    - name: suma de variables de entorno
-      id: step1
+    - name: Operar las variables de entorno
+      id: suma
       run: |
-        RESULTADO=$((${{ vars.PRIMER_NUMERO }} + ${{ vars.SEGUNDO_NUMERO }}))
-        echo "RESULTADO=$RESULTADO" >> $GITHUB_OUTPUT
+        resultado=$((${{ vars.A }} + ${{ vars.B }}))
+        echo "resultado=$resultado" >> $GITHUB_OUTPUT
 
   validar_resultado:
+    name: Validación
     runs-on: ubuntu-latest
     needs: suma_variables
     steps:
-    - name: validación de resultado
+    - name: Comparar resultado
       run: |
         if [ ${{ needs.suma_variables.outputs.resultado }} -gt 10 ]; then
           echo "El resultado de la suma es mayor que 10"
