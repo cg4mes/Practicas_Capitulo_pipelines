@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: qa
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
     - name: suma de variables de entorno
       run: |
-        # Asignación de variables de entorno sin espacios alrededor del signo igual
         RESULTADO=$((${{ vars.PRIMER_NUMERO }} + ${{ vars.SEGUNDO_NUMERO }}))
         echo "Resultado de la suma es: $RESULTADO"
 
