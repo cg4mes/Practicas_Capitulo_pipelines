@@ -21,11 +21,11 @@ jobs:
   validar_resultado:
     name: Validación
     runs-on: ubuntu-latest
-    needs: suma_variables
+    needs: suma
     steps:
     - name: Comparar resultado
       run: |
-        if [ ${{ needs.suma_variables.outputs.resultado }} -gt 10 ]; then
+        if [ ${{ needs.suma.outputs.resultado }} -gt 10 ]; then
           echo "El resultado de la suma es mayor que 10"
         else
           echo "El resultado de la suma es menor o igual a 10"
