@@ -19,7 +19,7 @@ jobs:
         echo "resultado=$resultado" >> $GITHUB_OUTPUT
 
   validar_resultado:
-    name: Validación
+    name: Validación del resultado
     runs-on: ubuntu-latest
     needs: suma
     steps:
