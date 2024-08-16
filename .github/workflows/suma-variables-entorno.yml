@@ -14,12 +14,11 @@ jobs:
       uses: actions/checkout@v2
     - name: suma de variables de entorno
       run: |
-
-        RESULTADO = $((${{ vars.PRIMER_NUMERO }} + ${{ vars.SEGUNDO_NUMERO }}))
-        echo "resultado de la suma es: $RESULTADO"
+        RESULTADO=$((${{ vars.PRIMER_NUMERO }} + ${{ vars.SEGUNDO_NUMERO }}))
+        echo "Resultado de la suma es: $RESULTADO"
 
         if [ $RESULTADO -gt 10 ]; then
-          echo "el resultado de la suma es mayor 10"
+          echo "El resultado de la suma es mayor que 10"
         else
-          echo "el resultado de la suma es menor o igual a 10"
+          echo "El resultado de la suma es menor o igual a 10"
         fi
