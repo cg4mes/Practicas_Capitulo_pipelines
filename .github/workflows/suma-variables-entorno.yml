@@ -9,15 +9,22 @@ jobs:
   suma_variables:
     runs-on: ubuntu-latest
     environment: qa
+    outputs: 
+      resultado: ${{ steps.step1.outputs.RESULTADO }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: suma de variables de entorno
+      id: step1
       run: |
-        RESULTADO=$((${{ vars.PRIMER_NUMERO }} + ${{ vars.SEGUNDO_NUMERO }}))
-        echo "Resultado de la suma es: $RESULTADO"
-
-        if [ $RESULTADO -gt 10 ]; then
+        RESULTADO=$((${{ vars.PRIMER_NUMERO }} + ${{ vars.SEGUNDO_NUMERO }})) >> "$GITHUB_OUTPUT"
+  validar_resultado:
+    runs-on: ubuntu-latest
+    needs: suma_variables
+    steps:
+    - name: validación de resultado
+      run: |
+        if [ ${{ steps.step1.outputs.RESULTADO }} -gt 10 ]; then
           echo "El resultado de la suma es mayor que 10"
         else
           echo "El resultado de la suma es menor o igual a 10"
