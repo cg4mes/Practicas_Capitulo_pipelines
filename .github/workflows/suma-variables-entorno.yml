@@ -11,7 +11,6 @@ jobs:
     steps:
     - name: suma de variables de entorno
       run: |
-      
         numero1=8
         numero2=1
         echo "numero 1: $numero1"
