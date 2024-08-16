@@ -11,4 +11,16 @@ jobs:
     steps:
     - name: suma de variables de entorno
       run: |
-        echo "Hola mundo"
+      
+        numero1=8
+        numero2=1
+        echo "numero 1: $numero1"
+        echo "numero 2: $numero2"
+        RESULTADO=$(($numero1 + $numero2))
+        echo "resultado de la suma es: $RESULTADO"
+
+        if [ $RESULTADO -gt 10 ]; then
+          echo "el resultado de la suma es mayor a 10"
+        else
+          echo "el resultado de la suma es menor o igual a 10"
+        fi
