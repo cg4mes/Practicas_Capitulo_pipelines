@@ -3,12 +3,14 @@ name: suma de dos variables de entorno
 on:
   push:
     branches: 
-      - test/**
-
+      - 'test*'
+      
 jobs:
   suma_variables:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
     - name: suma de variables de entorno
       run: |
         echo "Hola mundo"
