@@ -14,4 +14,6 @@ jobs:
         json: | 
           '{"name": "pipelines", "activity": 3, "module": 2, "isRequired:" false}'
         filename: 'test.json'
-    - uses: actions/upload-artifact@v4.4.0   
+    - uses: actions/upload-artifact@v4.4.0  
+      with:
+        path: test.json 
