@@ -1,0 +1,15 @@
+name: convert json to json file
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  convert:
+    name: convert json to file
+    runs-on: ubuntu-latest
+    steps: 
+    - uses: devops-actions/json-to-file@v1.0.0
+      with:
+      json: '{"name": "pipelines", "activity": 3, "module": 2, "isRequired:" false}'
+      filename: 'test.json'
