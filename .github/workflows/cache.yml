@@ -16,7 +16,7 @@ jobs:
       id: cache-json
       uses: actions/cache@v4
       env:
-        cache-name: cache-json 
+        cache-name: cache-json
       with:
         path: archivo.json
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/archivo.json') }}
