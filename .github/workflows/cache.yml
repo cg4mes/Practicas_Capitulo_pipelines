@@ -1,0 +1,37 @@
+name: save json file on cache
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: save cache
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Cache JSON file
+      id: cache-json
+      uses: actions/cache@v4
+      env:
+        cache-name: cache-json 
+      with:
+        path: archivo.json
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/archivo.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+    - name: Save JSON if not cached
+      if: ${{ steps.cache-json.outputs.cache-hit != 'true' }}
+      uses: devops-actions/json-tofile@v1.0.0
+      with:
+        json: |
+          '{"name": "pipelines","activity": 3,"module": 2,"isRequired": false}'
+        filename: 'archivo.json'
+    - name: Upload JSON artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: archivo.json report
+        path: archivo.json
