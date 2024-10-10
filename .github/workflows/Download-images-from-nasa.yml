@@ -48,7 +48,7 @@ jobs:
         env:
           cache-name: cache-img
         with:
-          path: img-${{ matrix.dates }}.jpg
+          path: img-${{ matrix.dates }}.*
           key: cache-img-${{ matrix.dates }} 
           restore-keys: |
             cache-img-
