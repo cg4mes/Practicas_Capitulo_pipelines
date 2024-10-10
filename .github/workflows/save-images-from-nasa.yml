@@ -50,3 +50,7 @@ jobs:
     - name: Print matrix
       run: |
         echo "Matrix values: ${{ matrix.dates }}"
+
+    - name: Hacer una petición GET
+      run: |
+        curl -X GET https://api.nasa.gov/planetary/apod?api_key=6RphMRBVvVmjmjjdMQOW8hEQGnL9EN3jchSuwL4T&date=${{ matrix.dates }}  
