@@ -13,10 +13,10 @@ jobs:
       uses: actions/checkout@v2
     - name: Read json file
       id: readjson
-      uses: shyiko/read-json@v1
+      uses: antifree/json-to-variables@v1.2.0
       with:
-        path: dates.json  # Cambia esto por la ruta de tu archivo JSON
-        key: dates              # Cambia esto por la clave que deseas extraer
+        filename: 'dates.json'
+        prefix: 'dates'
     - name: Use extracted value
       run: | 
-        echo "Extracted Value: ${{ steps.read_json.outputs.value }}"
+        echo "Extracted values are: ${{ env.dates_dates }}"
