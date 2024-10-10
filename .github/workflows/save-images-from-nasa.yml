@@ -58,4 +58,8 @@ jobs:
       uses: valitydev/action-download-file@v1
       with:
         url: https://api.nasa.gov/planetary/apod?api_key=6RphMRBVvVmjmjjdMQOW8hEQGnL9EN3jchSuwL4T&date=2023-12-12
-        target-path: .
+        target-path: imagen.jpg
+
+    - name: Mostrar detalles de la imagen
+      run: |
+        echo "Imagen descargada: $(ls -l imagen.jpg)"    
