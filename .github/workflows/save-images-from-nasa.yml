@@ -33,17 +33,13 @@ jobs:
           vars+=("$var")
           count=$((count + 1))
         done
+        echo "Total environment variables: $count"
         echo "vars=${vars[*]}" >> $GITHUB_ENV
-        echo "matrix=[${vars[*]}]" >> $GITHUB_ENV
 
     - name: Set matrix for jobs
       id: set_matrix
       run: |
-        echo "matrix=[$(echo ${vars[*]} | sed 's/ /,/g')]" >> $GITHUB_ENV
-
-    - name: Print matrix
-      run: |
-        echo "Matrix values: ${{ toJson(matrix.dates) }}"
+        echo "matrix=[${vars[*]}]" >> $GITHUB_ENV
 
   process-images:
     runs-on: ubuntu-latest
@@ -51,6 +47,7 @@ jobs:
     strategy:
       matrix:
         dates: ${{ fromJson(env.matrix) }}
+      
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -58,3 +55,7 @@ jobs:
     - name: Print matrix
       run: |
         echo "Matrix values: ${{ matrix.dates }}"
+
+    - name: Process image for date
+      run: |
+        echo "Processing images for date: ${{ matrix.dates }}"
