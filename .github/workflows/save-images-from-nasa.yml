@@ -1,0 +1,21 @@
+name: save images from nasa
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  read-json:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Read json file
+      id: readjson
+      uses: shyiko/read-json@v1
+      with:
+        path: dates.json  # Cambia esto por la ruta de tu archivo JSON
+        key: dates              # Cambia esto por la clave que deseas extraer
+    - name: Use extracted value
+      run: echo "Extracted Value: ${{ steps.read_json.outputs.value }}"
