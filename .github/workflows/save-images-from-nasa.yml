@@ -18,4 +18,5 @@ jobs:
         path: dates.json  # Cambia esto por la ruta de tu archivo JSON
         key: dates              # Cambia esto por la clave que deseas extraer
     - name: Use extracted value
-      run: echo "Extracted Value: ${{ steps.read_json.outputs.value }}"
+      run: | 
+        echo "Extracted Value: ${{ steps.read_json.outputs.value }}"
