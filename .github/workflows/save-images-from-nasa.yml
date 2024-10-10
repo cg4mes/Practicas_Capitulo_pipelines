@@ -54,11 +54,11 @@ jobs:
         response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
         echo "Respuesta: $response"
         echo "response=$response" >> $GITHUB_ENV  # Guardar la respuesta en una variable de entorno
-    - name: download image    
-      uses: valitydev/action-download-file@v1
+    - name: "Save cat image from URL" 
+      uses: minituff/save-image@v1.4
       with:
-        url: https://api.nasa.gov/planetary/apod?api_key=6RphMRBVvVmjmjjdMQOW8hEQGnL9EN3jchSuwL4T&date=2023-12-12
-        target-path: imagen.jpg
+        url: 'https://api.nasa.gov/planetary/apod?api_key=6RphMRBVvVmjmjjdMQOW8hEQGnL9EN3jchSuwL4T&date=2023-12-12'
+        imagePath: 'media/imagen.png'
 
     - name: Mostrar detalles de la imagen
       run: |
