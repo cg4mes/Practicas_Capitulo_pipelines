@@ -11,31 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set_matrix.outputs.matrix }}
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Read json file
-      id: readjson
-      uses: antifree/json-to-variables@v1.2.0
-      with:
-        filename: 'dates.json'
-        prefix: 'dates'
+      - name: Read json file
+        id: readjson
+        uses: antifree/json-to-variables@v1.2.0
+        with:
+          filename: 'dates.json'
+          prefix: 'dates'
 
-    - name: Set environment variables for each date
-      id: count_vars
-      run: |
-        vars=()
-        for var in $(env | grep '^dates_dates_' | cut -d'=' -f1); do
-          vars+=("${!var}")
-        done
-        echo "vars=${vars[*]}" >> $GITHUB_ENV
-
-    - name: Set matrix for jobs
-      id: set_matrix
-      run: |
-        matrix_json=$(echo "[\"$(echo ${vars[*]} | sed 's/ /\", \"/g')\"]")
-        echo "matrix=$matrix_json" >> "$GITHUB_OUTPUT"
+      - name: Set matrix for jobs
+        id: set_matrix
+        run: |
+          vars=()
+          for var in $(env | grep '^dates_dates_' | cut -d'=' -f1); do
+            vars+=("${!var}")
+          done
+          matrix_json=$(echo "[\"$(echo ${vars[*]} | sed 's/ /\", \"/g')\"]")
+          echo "matrix=$matrix_json" >> "$GITHUB_OUTPUT"
 
   process-images:
     name: Image processing
@@ -44,40 +40,40 @@ jobs:
     strategy:
       matrix:
         dates: ${{ fromJson(needs.read-json.outputs.matrix) }}
-      
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Evaluate image cache
-      id: cache-img
-      uses: actions/cache@v4
-      env:
-        cache-name: cache-img
-      with:
-        path: img-${{ matrix.dates }}.jpg
-        key: cache-img-${{ matrix.dates }}
-        restore-keys: |
-          cache-img-
+      - name: Evaluate image cache
+        id: cache-img
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-img
+        with:
+          path: img-${{ matrix.dates }}.jpg
+          key: cache-img-${{ matrix.dates }}
+          restore-keys: |
+            cache-img-
 
-    - name: Execute GET request if cache does not exist
-      id: fetch_image
-      if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
-      run: |
-        echo "Consultando la fecha: ${{ matrix.dates }}"
-        response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
-        image_url=$(echo "$response" | jq -r '.url')
-        echo "image_url=$image_url" >> $GITHUB_ENV
+      - name: Execute GET request if cache does not exist
+        id: fetch_image
+        if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
+        run: |
+          echo "Consultando la fecha: ${{ matrix.dates }}"
+          response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
+          image_url=$(echo "$response" | jq -r '.url')
+          echo "image_url=$image_url" >> $GITHUB_ENV
 
-    - name: Download image from URL 
-      if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
-      uses: minituff/save-image@v1.4
-      with:
-        url: ${{ env.image_url }}
-        imagePath: 'img-${{ matrix.dates }}.jpg'
+      - name: Download image from URL 
+        if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
+        uses: minituff/save-image@v1.4
+        with:
+          url: ${{ env.image_url }}
+          imagePath: 'img-${{ matrix.dates }}.jpg'
 
-    - name: Upload image artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: img-${{ matrix.dates }}
-        path: img-${{ matrix.dates }}.jpg
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-${{ matrix.dates }}
+          path: img-${{ matrix.dates }}.jpg
