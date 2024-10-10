@@ -3,7 +3,7 @@ name: save images from nasa
 on: 
   push:
     branches:
-      - main
+      - save-images-from-nasa
 
 jobs:
   read-json:
