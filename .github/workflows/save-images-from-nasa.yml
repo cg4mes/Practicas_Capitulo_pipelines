@@ -69,6 +69,7 @@ jobs:
         echo "URL de la imagen: $image_url"
 
     - name: Save image from URL 
+      if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
       uses: minituff/save-image@v1.4
       with:
         url: ${{ env.image_url }}
