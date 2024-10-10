@@ -7,7 +7,7 @@ on:
 
 jobs:
   read-json:
-    name: Read json file and build parallels
+    name: Reading json file and building parallels
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set_matrix.outputs.matrix }}
