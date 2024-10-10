@@ -67,8 +67,15 @@ jobs:
         echo "Consultando la fecha: ${{ matrix.dates }}"
         response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
         echo "Respuesta: $response"
-        echo "$response" > "img-${{ matrix.dates }}.json"
-        echo "response=$response" >> $GITHUB_ENV
+        
+        # Verificar si la respuesta contiene un error
+        if [[ "$response" == *'"url":null'* ]]; then
+          echo "La respuesta del API no contiene una URL válida."
+          echo "response=null" >> $GITHUB_ENV
+        else
+          echo "$response" > "$CACHE_FILE"  # Guardar respuesta en caché
+          echo "response=$response" >> $GITHUB_ENV
+        fi
 
     - name: Extraer URL de la imagen
       id: extract_image_url
