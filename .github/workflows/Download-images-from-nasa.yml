@@ -26,10 +26,7 @@ jobs:
       - name: Set matrix for jobs
         id: set_matrix
         run: |
-          vars=()
-          for var in $(env | grep '^dates_dates_' | cut -d'=' -f1); do
-            vars+=("${!var}")
-          done
+          vars=($(env | grep '^dates_dates_' | awk -F'=' '{print $2}'))
           matrix_json=$(echo "[\"$(echo ${vars[*]} | sed 's/ /\", \"/g')\"]")
           echo "matrix=$matrix_json" >> "$GITHUB_OUTPUT"
 
