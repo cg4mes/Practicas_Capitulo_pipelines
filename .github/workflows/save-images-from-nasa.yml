@@ -20,3 +20,13 @@ jobs:
     - name: Use extracted value
       run: | 
         echo "Extracted values are: ${{ env.dates_dates_0 }}"
+
+    - name: Count environment variables
+      id: count_vars
+      run: |
+        count=0
+        for var in $(env | grep '^dates_dates_' | cut -d'=' -f1); do
+          count=$((count + 1))
+        done
+        echo "Total environment variables: $count"
+        echo "::set-output name=var_count::$count"
