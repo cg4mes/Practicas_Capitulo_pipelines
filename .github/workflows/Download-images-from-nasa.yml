@@ -65,11 +65,8 @@ jobs:
       - name: Determine image extension
         id: determine_extension
         run: |
-          if [[ "${{ env.image_url }}" == *.png ]]; then
-            echo "image_extension=png" >> $GITHUB_ENV
-          else
-            echo "image_extension=jpg" >> $GITHUB_ENV
-          fi
+          extension="${{ env.image_url##*. }}"
+          echo "image_extension=$extension" >> $GITHUB_ENV
 
       - name: Download image from URL 
         if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
