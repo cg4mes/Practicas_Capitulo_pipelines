@@ -1,6 +1,6 @@
-name: Download popular images from nasa
+name: Download popular images from NASA
 
-on: 
+on:
   push:
     branches:
       - save-images-from-nasa
@@ -48,7 +48,7 @@ jobs:
         env:
           cache-name: cache-img
         with:
-          path: img-${{ matrix.dates }}.jpg
+          path: img-${{ matrix.dates }}.*
           key: cache-img-${{ matrix.dates }} 
           restore-keys: |
             cache-img-
@@ -62,15 +62,24 @@ jobs:
           image_url=$(echo "$response" | jq -r '.url')
           echo "image_url=$image_url" >> $GITHUB_ENV
 
+      - name: Determine image extension
+        id: determine_extension
+        run: |
+          if [[ "${{ env.image_url }}" == *.png ]]; then
+            echo "image_extension=png" >> $GITHUB_ENV
+          else
+            echo "image_extension=jpg" >> $GITHUB_ENV
+          fi
+
       - name: Download image from URL 
         if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
         uses: minituff/save-image@v1.4
         with:
           url: ${{ env.image_url }}
-          imagePath: 'img-${{ matrix.dates }}.jpg'
+          imagePath: 'img-${{ matrix.dates }}.${{ env.image_extension }}'
 
       - name: Upload image artifact
         uses: actions/upload-artifact@v4
         with:
           name: img-${{ matrix.dates }}
-          path: img-${{ matrix.dates }}.jpg
+          path: 'img-${{ matrix.dates }}.*'
