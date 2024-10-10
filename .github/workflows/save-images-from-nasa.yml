@@ -77,7 +77,7 @@ jobs:
         url: ${{ env.image_url }}
         imagePath: 'img-${{ matrix.dates }}.jpg'
 
-    - name: Upload JSON artifact
+    - name: Upload image artifact
       uses: actions/upload-artifact@v4
       with:
         name: img-${{ matrix.dates }}
