@@ -55,8 +55,7 @@ jobs:
 
       - name: Execute GET request if cache does not exist
         id: fetch_image
-        if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
-        if: ${{ needs.read-json.result == 'success' }}
+        if: ${{ steps.cache-img.outputs.cache-hit != 'true' && needs.read-json.result == 'success' }}
         run: |
           set -e
           response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
