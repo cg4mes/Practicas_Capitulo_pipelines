@@ -22,7 +22,7 @@ jobs:
         filename: 'dates.json'
         prefix: 'dates'
 
-    - name: Set environment variables
+    - name: Set environment variables for each date
       id: count_vars
       run: |
         vars=()
@@ -68,7 +68,6 @@ jobs:
         response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
         image_url=$(echo "$response" | jq -r '.url')
         echo "image_url=$image_url" >> $GITHUB_ENV
-        echo "URL de la imagen: $image_url"
 
     - name: Download image from URL 
       if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
