@@ -42,7 +42,4 @@ jobs:
 
     - name: Print matrix
       run: |
-        echo "Matrix values:"
-        for date in ${{ toJson(matrix.dates) }}; do
-          echo "Date: ${date}"
-        done
+        echo "Matrix values: ${{ toJson(matrix.dates) }}"
