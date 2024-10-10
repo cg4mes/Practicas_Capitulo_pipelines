@@ -26,7 +26,7 @@ jobs:
       run: |
         vars=()
         for var in $(env | grep '^dates_dates_' | cut -d'=' -f1); do
-          vars+=("$var")
+          vars+=("${!var}")
         done
         echo "vars=${vars[*]}" >> $GITHUB_ENV
 
