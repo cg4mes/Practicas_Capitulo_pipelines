@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dates: ${{ env.matrix }}
+        dates: ${{ fromJson(env.matrix) }}
       
     steps:
     - name: Checkout code
