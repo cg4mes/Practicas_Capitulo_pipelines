@@ -70,7 +70,7 @@ jobs:
           echo "image_extension=$extension" >> $GITHUB_ENV
 
       - name: Download image from URL 
-        if: ${{ steps.cache-img.outputs.cache-hit != 'true' && steps.fetch_image.outcome == 'success' }}
+        if: ${{ steps.cache-img.outputs.cache-hit != 'true' && success() }}
         uses: minituff/save-image@v1.4
         with:
           url: ${{ env.image_url }}
