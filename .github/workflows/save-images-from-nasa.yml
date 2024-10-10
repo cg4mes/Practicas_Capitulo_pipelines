@@ -8,15 +8,20 @@ on:
 jobs:
   read-json:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
     - name: Read json file
       id: readjson
       uses: antifree/json-to-variables@v1.2.0
       with:
         filename: 'dates.json'
         prefix: 'dates'
+
     - name: Use extracted value
       run: | 
         echo "Extracted values are: ${{ env.dates_dates_0 }}"
@@ -25,7 +30,21 @@ jobs:
       id: count_vars
       run: |
         count=0
+        vars=()
         for var in $(env | grep '^dates_dates_' | cut -d'=' -f1); do
+          vars+=("$var")
           count=$((count + 1))
         done
-        echo "Total environment variables: $count"
+        echo "vars=${vars[*]}" >> $GITHUB_ENV
+
+    - name: Set matrix for jobs
+      id: set_matrix
+      run: |
+        echo "matrix=[$(echo ${vars[*]} | sed 's/ /,/g')]" >> $GITHUB_ENV
+
+    - name: Print matrix
+      run: |
+        echo "Matrix values:"
+        for date in ${{ toJson(matrix.dates) }}; do
+          echo "Date: $date"
+        done
