@@ -8,7 +8,7 @@ on:
 jobs:
   read-json:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -43,6 +43,6 @@ jobs:
     - name: Print matrix
       run: |
         echo "Matrix values:"
-        for date in ${{ toJson(matrix.dates) }}; do
+        for date in ${{ toJson(matrix) }}; do
           echo "Date: $date"
         done
