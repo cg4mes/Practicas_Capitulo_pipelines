@@ -62,7 +62,7 @@ jobs:
 
     - name: Hacer una petición GET si no hay caché
       id: fetch_image
-      if: ${{ response }} == null
+      if: steps.check_cache.outputs.response == 'null'
       run: |
         echo "Consultando la fecha: ${{ matrix.dates }}"
         response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
