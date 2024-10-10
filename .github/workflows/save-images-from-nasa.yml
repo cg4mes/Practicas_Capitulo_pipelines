@@ -19,4 +19,4 @@ jobs:
         prefix: 'dates'
     - name: Use extracted value
       run: | 
-        echo "Extracted values are: ${{ env.dates_dates }}"
+        echo "Extracted values are: ${{ env.dates_dates_0 }}"
