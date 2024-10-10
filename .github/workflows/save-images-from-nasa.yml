@@ -47,13 +47,28 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Hacer una petición GET
+    - name: Verificar si ya existe la respuesta
+      id: check_cache
+      run: |
+        CACHE_FILE="img-${{ matrix.dates }}.json"
+        if [ -f "$CACHE_FILE" ]; then
+          echo "Respuesta en caché encontrada: $CACHE_FILE"
+          response=$(cat "$CACHE_FILE")
+          echo "response=$response" >> $GITHUB_ENV
+        else
+          echo "No se encontró respuesta en caché."
+          echo "response=null" >> $GITHUB_ENV
+        fi  
+
+    - name: Hacer una petición GET si no hay caché
       id: fetch_image
+      if: steps.check_cache.outputs.response == 'null'
       run: |
         echo "Consultando la fecha: ${{ matrix.dates }}"
         response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
         echo "Respuesta: $response"
-        echo "response=$response" >> $GITHUB_ENV  # Guardar la respuesta en una variable de entorno
+        echo "$response" > "cache-${{ matrix.dates }}.json"
+        echo "response=$response" >> $GITHUB_ENV
 
     - name: Extraer URL de la imagen
       id: extract_image_url
@@ -73,7 +88,3 @@ jobs:
       with:
         name: img-${{ matrix.dates }}
         path: img-${{ matrix.dates }}.jpg
-
-    - name: Mostrar detalles de la imagen
-      run: |
-        echo "Imagen descargada: $(ls -l img-${{ matrix.dates }}.jpg)"   
