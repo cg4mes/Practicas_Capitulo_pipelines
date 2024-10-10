@@ -47,7 +47,7 @@ jobs:
     needs: read-json
     strategy:
       matrix:
-        dates: ${{ needs.read-json.outputs.matrix }}
+        dates: ${{ fromJson(needs.read-json.outputs.matrix) }}
       
     steps:
     - name: Checkout code
