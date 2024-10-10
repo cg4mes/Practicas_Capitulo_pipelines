@@ -46,7 +46,7 @@ jobs:
     needs: read-json
     strategy:
       matrix:
-        dates: ${{ fromJson(env.matrix) }}
+        dates: ${{ env.matrix }}
       
     steps:
     - name: Checkout code
