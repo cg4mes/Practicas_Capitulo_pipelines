@@ -34,6 +34,7 @@ jobs:
           count=$((count + 1))
         done
         echo "vars=${vars[*]}" >> $GITHUB_ENV
+        echo "matrix=[${vars[*]}]" >> $GITHUB_ENV
 
     - name: Set matrix for jobs
       id: set_matrix
