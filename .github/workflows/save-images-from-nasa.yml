@@ -51,6 +51,6 @@ jobs:
       id: fetch_image
       run: |
         echo "Consultando la fecha: ${{ matrix.dates }}"
-        response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=6RphMRBVvVmjmjjdMQOW8hEQGnL9EN3jchSuwL4T&date=${{ matrix.dates }}")
+        response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
         echo "Respuesta: $response"
         echo "response=$response" >> $GITHUB_ENV  # Guardar la respuesta en una variable de entorno
