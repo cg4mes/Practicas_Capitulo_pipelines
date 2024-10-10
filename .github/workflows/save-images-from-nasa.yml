@@ -62,4 +62,4 @@ jobs:
 
     - name: Mostrar detalles de la imagen
       run: |
-        echo "Imagen descargada: $(ls -l imagen.jpg)"    
+        echo "Imagen descargada: $(ls -l media/imagen.png)"   
