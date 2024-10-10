@@ -62,18 +62,18 @@ jobs:
         echo "image_url=$image_url" >> $GITHUB_ENV
         echo "URL de la imagen: $image_url"
 
-    - name: "Save cat image from URL" 
+    - name: Save image from URL 
       uses: minituff/save-image@v1.4
       with:
         url: ${{ env.image_url }}
-        imagePath: 'imagen.jpg'
+        imagePath: 'img-${{ matrix.dates }}.jpg'
 
     - name: Upload JSON artifact
       uses: actions/upload-artifact@v4
       with:
-        name: imagen-nasa
-        path: imagen.jpg
+        name: img-${{ matrix.dates }}
+        path: img-${{ matrix.dates }}.jpg
 
     - name: Mostrar detalles de la imagen
       run: |
-        echo "Imagen descargada: $(ls -l imagen.jpg)"   
+        echo "Imagen descargada: $(ls -l img-${{ matrix.dates }}.jpg)"   
