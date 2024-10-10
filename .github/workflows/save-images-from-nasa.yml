@@ -60,6 +60,12 @@ jobs:
         url: 'https://api.nasa.gov/planetary/apod?api_key=6RphMRBVvVmjmjjdMQOW8hEQGnL9EN3jchSuwL4T&date=2023-12-12'
         imagePath: 'media/imagen.png'
 
+    - name: Upload JSON artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: imagen-nasa
+        path: media/imagen.png
+
     - name: Mostrar detalles de la imagen
       run: |
         echo "Imagen descargada: $(ls -l media/imagen.png)"   
