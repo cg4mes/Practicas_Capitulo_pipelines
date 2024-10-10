@@ -75,5 +75,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: img-${{ matrix.dates }}
-          path: |
-            img-${{ matrix.dates }}.${{ env.image_extension }}
+          path: img-${{ matrix.dates }}.*
