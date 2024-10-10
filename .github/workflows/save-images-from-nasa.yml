@@ -29,4 +29,3 @@ jobs:
           count=$((count + 1))
         done
         echo "Total environment variables: $count"
-        echo "::set-output name=var_count::$count"
