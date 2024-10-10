@@ -65,7 +65,7 @@ jobs:
     - name: "Save cat image from URL" 
       uses: minituff/save-image@v1.4
       with:
-        url: $image_url
+        url: ${{ env.image_url }}
         imagePath: 'imagen.jpg'
 
     - name: Upload JSON artifact
