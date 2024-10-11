@@ -52,6 +52,13 @@ jobs:
           path: apod-${{ matrix.dates }}.json
           key: cache-api-response-${{ matrix.dates }}
 
+      - name: Extract url from json
+        if: ${{ steps.cache-api-response.outputs.cache-hit == 'true' }}
+        run: |
+          image_url=$(jq -r '.url' apod-${{ matrix.dates }}.json)
+          echo "image_url=$image_url" >> $GITHUB_ENV
+          echo "${{ env.image_url }}"    
+
       - name: Execute GET request if cache does not exist
         id: fetch_image
         if: ${{ steps.cache-api-response.outputs.cache-hit != 'true' }}
@@ -66,13 +73,6 @@ jobs:
             exit 1
           fi
           echo "image_url=$image_url" >> $GITHUB_ENV
-
-      - name: Extract url from json
-        if: ${{ steps.cache-api-response.outputs.cache-hit == 'true' }}
-        run: |
-          image_url=$(jq -r '.url' apod-${{ matrix.dates }}.json)
-          echo "image_url=$image_url" >> $GITHUB_ENV
-          echo "${{ env.image_url }}"
 
       - name: Download response
         if: ${{ steps.cache-api-response.outputs.cache-hit != 'true' }}
