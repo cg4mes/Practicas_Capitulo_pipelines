@@ -46,8 +46,10 @@ jobs:
       - name: Evaluate image cache
         id: cache-api-response
         uses: actions/cache@v4
+        env:
+          cache-name: cache-api-response
         with:
-          path: responses/apod-${{ matrix.dates }}.json
+          path: responses-${{ matrix.dates }}.json
           key: cache-api-response-${{ matrix.dates }}
           restore-keys: |
             cache-api-response-
@@ -57,17 +59,13 @@ jobs:
         if: ${{ steps.cache-api-response.outputs.cache-hit != 'true' }}
         run: |
           echo "Consultando la fecha: ${{ matrix.dates }}"
-          response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
-          
-          # Validar que la respuesta contiene una URL de imagen antes de guardar
+          response=$(curl -s -X GET "https://api.nasa.gov/planetary?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
+          echo "Response: $response"
           image_url=$(echo "$response" | jq -r '.url // empty')
           if [ -z "$image_url" ]; then
             echo "No image URL found for date: ${{ matrix.dates }}"
             exit 1
           fi
-
-          # Guardar la respuesta solo si es válida
-          echo "$response" > responses/apod-${{ matrix.dates }}.json
           echo "image_url=$image_url" >> $GITHUB_ENV
 
       - name: Determine image extension
