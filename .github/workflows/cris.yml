@@ -51,8 +51,6 @@ jobs:
         with:
           path: apod-${{ matrix.dates }}.json
           key: cache-api-response-${{ matrix.dates }}
-          restore-keys: |
-            cache-api-response-
 
       - name: Execute GET request if cache does not exist
         id: fetch_image
@@ -60,6 +58,7 @@ jobs:
         run: |
           echo "Consultando la fecha: ${{ matrix.dates }}"
           response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
+          echo "response=$response" >> $GITHUB_ENV
           echo "Response: $response"
           image_url=$(echo "$response" | jq -r '.url // empty')
           if [ -z "$image_url" ]; then
