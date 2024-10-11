@@ -57,14 +57,14 @@ jobs:
           response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
           if echo "$response" | jq -e '.code' > /dev/null; then
             msg=$(echo "$response" | jq -r '.msg')
-            echo "Error en la consulta: $msg" >&2
+            echo "Error in query: $msg" >&2
             exit 1
           fi
           image_url=$(echo "$response" | jq -r '.url')
           echo "image_url=$image_url" >> $GITHUB_ENV
           extension="${image_url##*.}"
           if [ -z "$extension" ] || ! [[ "$extension" =~ ^(jpg|jpeg|png|gif)$ ]]; then
-            echo "Error: La URL no tiene una extensión válida o es un tipo no soportado." >&2
+            echo "Error: The URL does not have a valid extension or is an unsupported type." >&2
             exit 1
           fi
           echo "image_extension=$extension" >> $GITHUB_ENV
