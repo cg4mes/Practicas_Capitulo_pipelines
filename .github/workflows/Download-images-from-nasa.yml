@@ -81,3 +81,4 @@ jobs:
         with:
           name: img-${{ matrix.dates }}
           path: img-${{ matrix.dates }}.*
+          retention-days: 1s
