@@ -77,7 +77,7 @@ jobs:
           key: cache-response-${{ matrix.dates }} 
 
       - name: Extract url from json
-        if: ${{ steps.cache-response.outputs.cache-hit = 'true' }}
+        if: ${{ steps.cache-response.outputs.cache-hit == 'true' }}
         run: |
           image_url=$(jq -r '.url' response-${{ matrix.dates }}.json)
           echo "image_url=$image_url" >> $GITHUB_ENV
