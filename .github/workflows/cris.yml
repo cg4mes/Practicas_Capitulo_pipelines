@@ -73,6 +73,7 @@ jobs:
         run: |
           image_url=$(jq -r '.url' apod-${{ matrix.dates }}.json)
           echo "image_url=$image_url" >> $GITHUB_ENV
+          echo "${{ env.image_url }}"
 
       - name: Download response
         if: ${{ steps.cache-api-response.outputs.cache-hit != 'true' }}
