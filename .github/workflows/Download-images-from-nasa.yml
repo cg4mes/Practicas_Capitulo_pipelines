@@ -48,7 +48,7 @@ jobs:
           path: img-${{ matrix.dates }}.*
           key: cache-img-${{ matrix.dates }}
 
-      - name: Execute GET request if cache does not exist
+      - name: Execute GET request
         id: fetch_image
         if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
         run: |
@@ -59,8 +59,15 @@ jobs:
             echo "Error in query: $msg" >&2
             exit 1
           fi
-          image_url=$(echo "$response" | jq -r '.url')
+          echo "response=$response" >> $GITHUB_ENV
+
+      - name: Extract url
+        run: |     
+          image_url=$( ${{ env.response }} | jq -r '.url')
           echo "image_url=$image_url" >> $GITHUB_ENV
+
+      - name: Evaluate extension
+        run: |    
           extension="${image_url##*.}"
           if [ -z "$extension" ] || ! [[ "$extension" =~ ^(jpg|jpeg|png|gif)$ ]]; then
             echo "Error: The URL does not have a valid extension or is an unsupported type." >&2
