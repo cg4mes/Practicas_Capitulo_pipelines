@@ -3,7 +3,7 @@ name: Download popular images from nasa
 on: 
   push:
     branches:
-      - save-images-from-nasa
+      - main
 
 jobs:
   read-json:
