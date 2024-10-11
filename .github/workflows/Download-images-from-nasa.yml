@@ -1,35 +1,4 @@
-name: Download popular images from nasa
-
-on: 
-  push:
-    branches:
-      - main
-
 jobs:
-  read-json:
-    name: Reading json file and building parallels
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set_matrix.outputs.matrix }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Read json file
-        id: readjson
-        uses: antifree/json-to-variables@v1.2.0
-        with:
-          filename: 'dates.json'
-          prefix: 'dates'
-
-      - name: Set matrix for jobs
-        id: set_matrix
-        run: |
-          vars=($(env | grep '^dates_dates_' | awk -F'=' '{print $2}'))
-          matrix_json=$(echo "[\"$(echo ${vars[*]} | sed 's/ /\", \"/g')\"]")
-          echo "matrix=$matrix_json" >> "$GITHUB_OUTPUT"
-
   process-images:
     name: Image processing
     runs-on: ubuntu-latest
@@ -39,6 +8,27 @@ jobs:
         dates: ${{ fromJson(needs.read-json.outputs.matrix) }}
 
     steps:
+      - name: Evaluate response cache
+        id: cache-response
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-response
+        with:
+          path: response-${{ matrix.dates }}.json
+          key: cache-response-${{ matrix.dates }} 
+
+      - name: Extract url from json
+        if: ${{ steps.cache-response.outputs.cache-hit == 'true' }}
+        run: |
+          image_url=$(jq -r '.url' response-${{ matrix.dates }}.json)
+          echo "image_url=$image_url" >> $GITHUB_ENV
+          extension="${image_url##*.}"
+          if [ -z "$extension" ] || ! [[ "$extension" =~ ^(jpg|jpeg|png|gif)$ ]]; then
+            echo "Error: The URL does not have a valid extension or is an unsupported type" >&2
+            exit 1
+          fi
+          echo "image_extension=$extension" >> $GITHUB_ENV
+
       - name: Execute GET request
         id: fetch_image
         if: ${{ steps.cache-response.outputs.cache-hit != 'true' }}
@@ -65,28 +55,7 @@ jobs:
         uses: devops-actions/json-to-file@v1.0.0
         with:
           json: ${{ env.response }}
-          filename: 'response-${{ matrix.dates }}.json'    
-          
-      - name: Evaluate response cache
-        id: cache-response
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-response
-        with:
-          path: response-${{ matrix.dates }}.json
-          key: cache-response-${{ matrix.dates }} 
-
-      - name: Extract url from json
-        if: ${{ steps.cache-response.outputs.cache-hit == 'true' }}
-        run: |
-          image_url=$(jq -r '.url' response-${{ matrix.dates }}.json)
-          echo "image_url=$image_url" >> $GITHUB_ENV
-          extension="${image_url##*.}"
-          if [ -z "$extension" ] || ! [[ "$extension" =~ ^(jpg|jpeg|png|gif)$ ]]; then
-            echo "Error: The URL does not have a valid extension or is an unsupported type" >&2
-            exit 1
-          fi
-          echo "image_extension=$extension" >> $GITHUB_ENV
+          filename: 'response-${{ matrix.dates }}.json'
 
       - name: Download image from url
         uses: minituff/save-image@v1.4
