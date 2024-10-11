@@ -48,9 +48,6 @@ jobs:
         with:
           path: img-${{ matrix.dates }}.*
           key: cache-img-${{ matrix.dates }}
-          fail-on-cache-miss: true
-          restore-keys: |
-            cache-img-
 
       - name: Execute GET request if cache does not exist
         id: fetch_image
