@@ -41,9 +41,6 @@ jobs:
         dates: ${{ fromJson(needs.read-json.outputs.matrix) }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Evaluate image cache
         id: cache-img
         uses: actions/cache@v4
