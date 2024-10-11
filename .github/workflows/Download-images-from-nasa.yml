@@ -62,11 +62,13 @@ jobs:
           echo "response=$response" >> $GITHUB_ENV
 
       - name: Extract url
+        if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
         run: |     
           image_url=$( "${{ env.response }}" | jq -r '.url')
           echo "image_url=$image_url" >> $GITHUB_ENV
 
       - name: Evaluate extension
+        if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
         run: |    
           extension="${image_url##*.}"
           if [ -z "$extension" ] || ! [[ "$extension" =~ ^(jpg|jpeg|png|gif)$ ]]; then
