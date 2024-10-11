@@ -3,7 +3,7 @@ name: Get images from NASA
 on:
   push:
     branches:
-      - cris
+      - main
 
 jobs:
   read-json:
@@ -92,5 +92,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: img-${{ matrix.dates }}
-          path: img-${{ matrix.dates }}.${{ env.ext }}.*
+          path: img-${{ matrix.dates }}.${{ env.ext }}
           retention-days: 1
