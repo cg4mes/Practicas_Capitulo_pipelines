@@ -39,18 +39,9 @@ jobs:
         dates: ${{ fromJson(needs.read-json.outputs.matrix) }}
 
     steps:
-      - name: Evaluate image cache
-        id: cache-img
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-img
-        with:
-          path: img-${{ matrix.dates }}.*
-          key: cache-img-${{ matrix.dates }}
-
       - name: Execute GET request
         id: fetch_image
-        if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
+        if: ${{ steps.cache-response.outputs.cache-hit != 'true' }}
         run: |
           set -e
           response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
@@ -59,6 +50,7 @@ jobs:
             echo "Error in query: $msg" >&2
             exit 1
           fi
+          echo "response=$response" >> $GITHUB_ENV
           image_url=$(echo "$response" | jq -r '.url')
           echo "image_url=$image_url" >> $GITHUB_ENV
           extension="${image_url##*.}"
@@ -68,8 +60,29 @@ jobs:
           fi
           echo "image_extension=$extension" >> $GITHUB_ENV
 
-      - name: Download image from URL 
-        if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
+      - name: Download response
+        if: ${{ steps.cache-response.outputs.cache-hit != 'true' }}
+        uses: devops-actions/json-to-file@v1.0.0
+        with:
+          json: ${{ env.response }}
+          filename: 'response-${{ matrix.dates }}.json'    
+          
+      - name: Evaluate response cache
+        id: cache-response
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-response
+        with:
+          path: response-${{ matrix.dates }}.json
+          key: cache-response-${{ matrix.dates }} 
+
+      - name: Extract url from json
+        if: ${{ steps.cache-response.outputs.cache-hit = 'true' }}
+        run: |
+          image_url=$(jq -r '.url' response-${{ matrix.dates }}.json)
+          echo "image_url=$image_url" >> $GITHUB_ENV
+
+      - name: Download image from url
         uses: minituff/save-image@v1.4
         with:
           url: ${{ env.image_url }}
