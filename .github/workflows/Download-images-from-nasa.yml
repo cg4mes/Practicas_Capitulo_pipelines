@@ -59,20 +59,11 @@ jobs:
             echo "Error in query: $msg" >&2
             exit 1
           fi
-          echo "response=$response" >> $GITHUB_ENV
-
-      - name: Extract url
-        if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
-        run: |     
-          image_url=$(echo "${{ env.response }}" | jq -r '.url')
+          image_url=$(echo "$response" | jq -r '.url')
           echo "image_url=$image_url" >> $GITHUB_ENV
-
-      - name: Evaluate extension
-        if: ${{ steps.cache-img.outputs.cache-hit != 'true' }}
-        run: |    
           extension="${image_url##*.}"
           if [ -z "$extension" ] || ! [[ "$extension" =~ ^(jpg|jpeg|png|gif)$ ]]; then
-            echo "Error: The URL does not have a valid extension or is an unsupported type" >&2
+            echo "Error: The URL does not have a valid extension or is an unsupported type." >&2
             exit 1
           fi
           echo "image_extension=$extension" >> $GITHUB_ENV
