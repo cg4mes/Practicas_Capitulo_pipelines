@@ -59,7 +59,7 @@ jobs:
         if: ${{ steps.cache-api-response.outputs.cache-hit != 'true' }}
         run: |
           echo "Consultando la fecha: ${{ matrix.dates }}"
-          response=$(curl -s -X GET "https://api.nasa.gov/planetary?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
+          response=$(curl -s -X GET "https://api.nasa.gov/planetary/apod?api_key=${{ secrets.API_KEY }}&date=${{ matrix.dates }}")
           echo "Response: $response"
           image_url=$(echo "$response" | jq -r '.url // empty')
           if [ -z "$image_url" ]; then
