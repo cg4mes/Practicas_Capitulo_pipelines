@@ -63,6 +63,10 @@ jobs:
           image_url=$(echo "$response" | jq -r '.url')
           echo "image_url=$image_url" >> $GITHUB_ENV
           extension="${image_url##*.}"
+          if [ -z "$extension" ]; then
+            echo "Error: La URL no tiene una extensión válida." >&2
+            exit 1
+          fi
           echo "image_extension=$extension" >> $GITHUB_ENV
 
       - name: Download image from URL 
