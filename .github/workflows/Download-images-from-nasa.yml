@@ -63,7 +63,7 @@ jobs:
           echo "image_url=$image_url" >> $GITHUB_ENV
           extension="${image_url##*.}"
           if [ -z "$extension" ] || ! [[ "$extension" =~ ^(jpg|jpeg|png|gif)$ ]]; then
-            echo "Error: The URL does not have a valid extension or is an unsupported type." >&2
+            echo "Error: The URL does not have a valid extension or is an unsupported type" >&2
             exit 1
           fi
           echo "image_extension=$extension" >> $GITHUB_ENV
