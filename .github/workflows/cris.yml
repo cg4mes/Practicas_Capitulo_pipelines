@@ -57,7 +57,14 @@ jobs:
         run: |
           image_url=$(jq -r '.url' apod-${{ matrix.dates }}.json)
           echo "image_url=$image_url" >> $GITHUB_ENV
-          echo "${{ env.image_url }}"    
+          if [[ "${{ env.image_url }}" == *.jpg ]]; then
+           echo "ext=jpg" >> $GITHUB_ENV
+          elif [[ "${{ env.image_url }}" == *.png ]]; then
+           echo "ext=png" >> $GITHUB_ENV
+          else
+           echo "No valid image extension found. Skipping."
+           exit 1
+          fi   
 
       - name: Execute GET request if cache does not exist
         id: fetch_image
@@ -73,17 +80,6 @@ jobs:
             exit 1
           fi
           echo "image_url=$image_url" >> $GITHUB_ENV
-
-      - name: Download response
-        if: ${{ steps.cache-api-response.outputs.cache-hit != 'true' }}
-        uses: devops-actions/json-to-file@v1.0.0
-        with:
-          json: ${{ env.response }}
-          filename: 'apod-${{ matrix.dates }}.json'    
-
-      - name: Determine image extension
-        id: determine-ext
-        run: |
           if [[ "${{ env.image_url }}" == *.jpg ]]; then
            echo "ext=jpg" >> $GITHUB_ENV
           elif [[ "${{ env.image_url }}" == *.png ]]; then
@@ -92,6 +88,14 @@ jobs:
            echo "No valid image extension found. Skipping."
            exit 1
           fi
+
+      - name: Download response
+        if: ${{ steps.cache-api-response.outputs.cache-hit != 'true' }}
+        uses: devops-actions/json-to-file@v1.0.0
+        with:
+          json: ${{ env.response }}
+          filename: 'apod-${{ matrix.dates }}.json'    
+
 
       - name: Download image from URL
         uses: minituff/save-image@v1.4
