@@ -52,20 +52,6 @@ jobs:
           path: apod-${{ matrix.dates }}.json
           key: cache-api-response-${{ matrix.dates }}
 
-      - name: Extract url from json
-        if: ${{ steps.cache-api-response.outputs.cache-hit == 'true' }}
-        run: |
-          image_url=$(jq -r '.url' apod-${{ matrix.dates }}.json)
-          echo "image_url=$image_url" >> $GITHUB_ENV
-          if [[ "${{ env.image_url }}" == *.jpg ]]; then
-           echo "ext=jpg" >> $GITHUB_ENV
-          elif [[ "${{ env.image_url }}" == *.png ]]; then
-           echo "ext=png" >> $GITHUB_ENV
-          else
-           echo "No valid image extension found. Skipping."
-           exit 1
-          fi   
-
       - name: Execute GET request if cache does not exist
         id: fetch_image
         if: ${{ steps.cache-api-response.outputs.cache-hit != 'true' }}
@@ -80,14 +66,13 @@ jobs:
             exit 1
           fi
           echo "image_url=$image_url" >> $GITHUB_ENV
-          if [[ "${{ env.image_url }}" == *.jpg ]]; then
-           echo "ext=jpg" >> $GITHUB_ENV
-          elif [[ "${{ env.image_url }}" == *.png ]]; then
-           echo "ext=png" >> $GITHUB_ENV
-          else
-           echo "No valid image extension found. Skipping."
-           exit 1
-          fi
+
+      - name: Extract url from json
+        if: ${{ steps.cache-api-response.outputs.cache-hit == 'true' }}
+        run: |
+          image_url=$(jq -r '.url' apod-${{ matrix.dates }}.json)
+          echo "image_url=$image_url" >> $GITHUB_ENV
+          echo "${{ env.image_url }}"
 
       - name: Download response
         if: ${{ steps.cache-api-response.outputs.cache-hit != 'true' }}
@@ -96,6 +81,17 @@ jobs:
           json: ${{ env.response }}
           filename: 'apod-${{ matrix.dates }}.json'    
 
+      - name: Determine image extension
+        id: determine-ext
+        run: |
+          if [[ "${{ env.image_url }}" == *.jpg ]]; then
+           echo "ext=jpg" >> $GITHUB_ENV
+          elif [[ "${{ env.image_url }}" == *.png ]]; then
+           echo "ext=png" >> $GITHUB_ENV
+          else
+           echo "No valid image extension found. Skipping."
+           exit 1
+          fi
 
       - name: Download image from URL
         uses: minituff/save-image@v1.4
